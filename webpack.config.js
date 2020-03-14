@@ -51,14 +51,14 @@ module.exports = function() {
     entry: [
       isDevelopment && 'webpack-dev-server/client?/',
       isDevelopment && 'webpack/hot/dev-server',
-      path.join(process.cwd(), 'src/index.jsx'),
+      path.join(process.cwd(), 'src/index.tsx'),
     ].filter(Boolean),
     output: {
-      path: isProduction ? path.join(process.cwd(), 'build') : undefined,
-      filename: isProduction ? 'js/[name].[contenthash:8].js' : 'js/bundle.js',
+      path: isProduction ? path.resolve(process.cwd(), 'build') : undefined,
+      filename: isProduction ? 'js/[name].[contenthash:8].js' : '[name].js',
       chunkFilename: isProduction
         ? 'js/[name].[contenthash:8].chunk.js'
-        : 'js/[name].chunk.js',
+        : '[name].chunk.js',
     },
     resolve: {
       modules: ['node_modules', 'src'],
@@ -94,7 +94,6 @@ module.exports = function() {
       ],
       splitChunks: {
         chunks: 'all',
-        name: false,
       },
       runtimeChunk: {
         name: entrypoint => `runtime-${entrypoint.name}`,
@@ -139,7 +138,7 @@ module.exports = function() {
           {},
           {
             inject: true,
-            template: path.join(process.cwd(), 'src/index.html'),
+            template: 'src/index.html',
           },
           isProduction
             ? {
@@ -171,6 +170,12 @@ module.exports = function() {
           chunkFilename: 'css/[name].[contenthash:8].chunk.css',
         }),
       new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true }),
-    ],
+    ].filter(Boolean),
+    devServer: {
+      hot: true,
+      historyApiFallback: true,
+      port: 3000,
+      disableHostCheck: false,
+    },
   };
 };
