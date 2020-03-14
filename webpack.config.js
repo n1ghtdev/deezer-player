@@ -14,7 +14,9 @@ module.exports = function() {
   function getStyleLoader(preProcessor) {
     const loaders = [
       isDevelopment && 'style-loader',
-      'css-loader',
+      {
+        loader: 'css-loader',
+      },
       {
         loader: 'postcss-loader',
         options: {
@@ -55,6 +57,7 @@ module.exports = function() {
     ].filter(Boolean),
     output: {
       path: isProduction ? path.resolve(process.cwd(), 'build') : undefined,
+      publicPath: '/',
       filename: isProduction ? 'js/[name].[contenthash:8].js' : '[name].js',
       chunkFilename: isProduction
         ? 'js/[name].[contenthash:8].chunk.js'
@@ -112,8 +115,9 @@ module.exports = function() {
         },
         {
           test: /\.(scss|sass)$/,
-
+          exclude: /node_modules/,
           use: getStyleLoader('sass-loader'),
+          sideEffects: true,
         },
         {
           test: [/\.bmp$/, /\.gif$/, /\.jpe?g$/, /\.png$/],
@@ -123,13 +127,13 @@ module.exports = function() {
             name: 'media/[name].[hash:8].[ext]',
           },
         },
-        {
-          loader: 'file-loader',
-          exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-          options: {
-            name: 'media/[name].[hash:8].[ext]',
-          },
-        },
+        // {
+        //   loader: 'file-loader',
+        //   exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
+        //   options: {
+        //     name: 'media/[name].[hash:8].[ext]',
+        //   },
+        // },
       ],
     },
     plugins: [
@@ -174,6 +178,7 @@ module.exports = function() {
     devServer: {
       hot: true,
       historyApiFallback: true,
+      clientLogLevel: 'none',
       port: 3000,
       disableHostCheck: false,
     },
