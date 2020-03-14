@@ -71,7 +71,7 @@ module.exports = function() {
         '@hooks': path.resolve('src', 'hooks'),
         '@reducers': path.resolve('src', 'reducers'),
         '@actions': path.resolve('src', 'actions'),
-        '@types': path.resolve('src', 'types'),
+        '@typings': path.resolve('src', 'typings'),
         '@styles': path.resolve('src', 'styles'),
         '@utils': path.resolve('src', 'utils'),
       },
@@ -164,7 +164,7 @@ module.exports = function() {
       ),
       new webpack.DefinePlugin({
         'process.env': {
-          NODE_ENV: JSON.stringify('production'),
+          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         },
       }),
       isDevelopment && new webpack.HotModuleReplacementPlugin(),
