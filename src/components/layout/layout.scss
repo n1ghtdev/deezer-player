@@ -1,0 +1,11 @@
+.layout {
+  margin-top: 50px;
+  display: flex;
+  justify-content: space-between;
+  &_content {
+    width: 70%;
+  }
+  &_aside {
+    width: 23%;
+  }
+}

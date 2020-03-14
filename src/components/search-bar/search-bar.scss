@@ -1,0 +1,28 @@
+@import '../../styles/vars.scss';
+
+.search-bar {
+  &_form {
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    margin: 20px 0;
+
+    &:focus-within {
+      border: 1px solid $primary;
+    }
+  }
+  &_input {
+    border: none;
+    height: 100%;
+    padding: 10px 15px;
+    background: none;
+    &:focus {
+      outline: none;
+    }
+  }
+  &_button {
+    background: none;
+    border: none;
+    padding: 0 25px;
+    cursor: pointer;
+  }
+}
