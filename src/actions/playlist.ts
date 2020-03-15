@@ -2,7 +2,7 @@ import { ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
 import { State } from '@reducers/index';
 import { types } from '@typings/playlist';
-import { searchByArtist } from 'src/api';
+import { searchByArtist } from '../api';
 
 type ThunkResult = ThunkAction<void, State, unknown, Action<string>>;
 
@@ -39,6 +39,13 @@ export function getSongsFailure(error: Error) {
     type: types.PLAYLIST_FAILURE,
     error,
   } as const;
+}
+
+export function setSong(songId: string) {
+  return {
+    type: types.SET_SONG,
+    payload: songId,
+  };
 }
 
 export type Actions = ReturnType<
