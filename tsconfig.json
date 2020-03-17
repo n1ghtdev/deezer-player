@@ -21,7 +21,8 @@
       "@utils/*": ["src/utils/*"],
       "@reducers/*": ["src/reducers/*"],
       "@actions/*": ["src/actions/*"],
-      "@typings/*": ["src/typings/*"]
+      "@typings/*": ["src/typings/*"],
+      "@selectors/*": ["src/selectors/*"]
     }
   },
   "include": ["src/**/*"],

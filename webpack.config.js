@@ -48,6 +48,7 @@ module.exports = function() {
   }
 
   return {
+    context: __dirname,
     mode: isProduction ? 'production' : isDevelopment && 'development',
     devtool: isProduction ? 'source-map' : 'cheap-module-source-map',
     entry: [
@@ -74,6 +75,7 @@ module.exports = function() {
         '@typings': path.resolve('src', 'typings'),
         '@styles': path.resolve('src', 'styles'),
         '@utils': path.resolve('src', 'utils'),
+        '@selectors': path.resolve('src', 'selectors'),
       },
     },
     optimization: {
@@ -173,7 +175,10 @@ module.exports = function() {
           filename: 'css/[name].[contenthash:8].css',
           chunkFilename: 'css/[name].[contenthash:8].chunk.css',
         }),
-      new ForkTsCheckerWebpackPlugin({ checkSyntacticErrors: true }),
+      new ForkTsCheckerWebpackPlugin({
+        eslint: true,
+        checkSyntacticErrors: true,
+      }),
     ].filter(Boolean),
     devServer: {
       hot: true,
