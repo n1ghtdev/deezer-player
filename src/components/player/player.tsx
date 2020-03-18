@@ -27,7 +27,7 @@ export default function Player(props: Props) {
   const { song } = props;
 
   const canvas = React.useRef<HTMLCanvasElement>(null);
-  const { getCurrentTime } = usePlayer(song?.preview, canvas);
+  const { getCurrentTime, setPlayback } = usePlayer(song?.preview, canvas);
 
   const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
@@ -35,8 +35,8 @@ export default function Player(props: Props) {
   const nextSongId = useSelector(getNextSong);
 
   const onPlay = React.useCallback(() => {
-    dispatch(playAction({ startedAt: getCurrentTime() }));
-  }, [dispatch, getCurrentTime]);
+    dispatch(playAction());
+  }, [dispatch]);
 
   const onPause = React.useCallback(() => {
     dispatch(pauseAction({ pausedAt: getCurrentTime() }));

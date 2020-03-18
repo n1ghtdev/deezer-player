@@ -129,13 +129,13 @@ module.exports = function() {
             name: 'media/[name].[hash:8].[ext]',
           },
         },
-        // {
-        //   loader: 'file-loader',
-        //   exclude: [/\.(js|mjs|jsx|ts|tsx)$/, /\.html$/, /\.json$/],
-        //   options: {
-        //     name: 'media/[name].[hash:8].[ext]',
-        //   },
-        // },
+        {
+          test: /\.svg$/,
+          loader: 'file-loader',
+          options: {
+            name: 'media/[name].[hash:8].[ext]',
+          },
+        },
       ],
     },
     plugins: [

@@ -3,6 +3,8 @@ import { Song } from '@typings/playlist';
 import SongItem from './song-item';
 
 import './song-list.scss';
+import { setCurrentSong } from '@actions/player';
+import { useDispatch } from 'react-redux';
 
 type Props = {
   songlist: any;
@@ -11,6 +13,7 @@ type Props = {
 
 export default function SongList(props: Props) {
   const { songlist, currentSong } = props;
+  const dispatch = useDispatch();
 
   return (
     <div className="song-list">
@@ -23,7 +26,7 @@ export default function SongList(props: Props) {
             duration={song.duration}
             active={song.id === currentSong}
             onChangeSong={(id: number) => {
-              console.log(id);
+              dispatch(setCurrentSong(id, 'playing'));
             }}
           />
         ))

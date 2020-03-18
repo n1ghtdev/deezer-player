@@ -15,6 +15,7 @@ export default function Time(props: Props) {
   const raf = React.useRef(null);
   const [currentTime, setCurrentTime] = React.useState(0);
 
+  // TODO: raf cleanup
   React.useEffect(() => {
     let then = 0;
 

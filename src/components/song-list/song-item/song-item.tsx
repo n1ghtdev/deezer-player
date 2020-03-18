@@ -1,5 +1,7 @@
 import React from 'react';
 import './song-item.scss';
+import { formatSeconds } from '@utils/format-seconds';
+import IconPlaying from '../../../assets/svg/playing.svg';
 
 type Props = {
   title: string;
@@ -20,14 +22,15 @@ export default function SongItem(props: Props) {
     onChangeSong(id);
   }
   return (
-    // TODO: button
     <div
       className={`song-item ${active ? 'active' : ''}`}
       onClick={handleChangeSong}
     >
-      <div className="song-item_number">{index}</div>
-      <h3 className="song-item_name">{title}</h3>
-      <span className="song-item_duration">{duration}</span>
+      <span className="song-item_number">
+        {active ? <img src={IconPlaying} alt="" /> : index}
+      </span>
+      <span className="song-item_name">{title}</span>
+      <span className="song-item_duration">{formatSeconds(duration)}</span>
     </div>
   );
 }

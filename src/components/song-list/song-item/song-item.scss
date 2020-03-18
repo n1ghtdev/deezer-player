@@ -1,17 +1,18 @@
 @import '@styles/vars.scss';
 
 .song-item {
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid $textLight;
   display: flex;
-  padding: 10px 0;
+  height: 56px;
+  align-items: center;
 
-  .active {
+  &.active {
     color: $primary;
   }
+
   &_number {
     width: 50px;
     text-align: center;
-    line-height: 1.4;
   }
   &_name {
     margin: 0;
