@@ -3,6 +3,7 @@ import { Action } from 'redux';
 import { State } from '@reducers/index';
 import { types } from '@typings/playlist';
 import { searchByArtist } from '../api';
+import { setCurrentSong } from './player';
 
 type ThunkResult = ThunkAction<void, State, unknown, Action<string>>;
 
@@ -13,6 +14,7 @@ export function getSongsByArtist(artist: string): ThunkResult {
     searchByArtist(artist).then(
       (data: any) => {
         dispatch(getSongsSuccess(data.data));
+        dispatch(setCurrentSong(data.data[0].id));
       },
       (error: Error) => {
         dispatch(getSongsFailure(error));
@@ -39,13 +41,6 @@ export function getSongsFailure(error: Error) {
     type: types.PLAYLIST_FAILURE,
     error,
   } as const;
-}
-
-export function setSong(songId: string) {
-  return {
-    type: types.SET_SONG,
-    payload: songId,
-  };
 }
 
 export type Actions = ReturnType<

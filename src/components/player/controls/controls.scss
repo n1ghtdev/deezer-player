@@ -1,0 +1,17 @@
+.controls {
+  display: flex;
+  margin: 0 20px;
+  &_button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 20px;
+    &:nth-child(2) {
+      font-size: 22px;
+    }
+    & > svg {
+      vertical-align: middle;
+    }
+  }
+}

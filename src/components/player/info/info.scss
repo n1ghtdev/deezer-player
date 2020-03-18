@@ -1,0 +1,22 @@
+.info {
+  display: flex;
+  align-items: center;
+  &_poster {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+  }
+  &_header {
+    margin-left: 15px;
+  }
+  &_title {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 0;
+  }
+  &_artist {
+    font-size: 12px;
+    font-weight: normal;
+    margin: 0;
+  }
+}

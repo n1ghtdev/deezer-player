@@ -1,17 +1,10 @@
-import { types } from '@typings/player';
+import { types, InitSongProps, PlayerState } from '@typings/player';
 
-export function playAction({
-  startedAt,
-  duration,
-}: {
-  startedAt: number;
-  duration: number;
-}) {
+export function playAction({ startedAt }: { startedAt: number }) {
   return {
     type: types.PLAY,
     payload: {
       startedAt,
-      duration,
     },
   } as const;
 }
@@ -24,4 +17,35 @@ export function pauseAction({ pausedAt }: { pausedAt: number }) {
     },
   } as const;
 }
-export type Actions = ReturnType<typeof playAction | typeof pauseAction>;
+
+export function initPlayer(payload: InitSongProps) {
+  return {
+    type: types.INIT,
+    payload,
+  } as const;
+}
+
+export function setCurrentSong(songId: number, state: PlayerState = 'paused') {
+  return {
+    type: types.SET_CURRENT_SONG,
+    payload: {
+      songId,
+      state,
+    },
+  } as const;
+}
+
+export function changeVolume(volume: number) {
+  return {
+    type: types.CHANGE_VOLUME,
+    payload: volume,
+  } as const;
+}
+
+export type Actions = ReturnType<
+  | typeof playAction
+  | typeof pauseAction
+  | typeof initPlayer
+  | typeof setCurrentSong
+  | typeof changeVolume
+>;
