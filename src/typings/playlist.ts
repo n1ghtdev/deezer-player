@@ -4,7 +4,6 @@ export enum types {
   PLAYLIST_FAILURE = '@@playlist/failure',
   PREV_SONG = '@@playlist/prev-song',
   NEXT_SONG = '@@playlist/next-song',
-  // SET_SONG = '@@playlist/set-song',
 }
 
 export type Artist = {
@@ -28,7 +27,6 @@ export type Song = {
 
 export type Playlist = {
   list: Partial<Song>[];
-  // current: Partial<Song>;
   loading: boolean;
   error: Error | boolean;
 };

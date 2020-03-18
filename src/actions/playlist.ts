@@ -13,6 +13,8 @@ export function getSongsByArtist(artist: string): ThunkResult {
 
     searchByArtist(artist).then(
       (data: any) => {
+        console.log(data.data);
+
         dispatch(getSongsSuccess(data.data));
         dispatch(setCurrentSong(data.data[0].id));
       },

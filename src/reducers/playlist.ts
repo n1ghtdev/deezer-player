@@ -4,7 +4,6 @@ import { Actions } from '@actions/playlist';
 
 const initialState: Playlist = {
   list: [],
-  // current: {},
   loading: false,
   error: false,
 };
@@ -16,7 +15,6 @@ export default function playlistReducer(
   return produce(state, draft => {
     switch (action.type) {
       case types.PLAYLIST_REQUEST: {
-        draft.list = [];
         draft.loading = true;
         break;
       }
@@ -31,10 +29,6 @@ export default function playlistReducer(
         draft.error = action.error;
         break;
       }
-      // case types.SET_SONG: {
-      //   draft.current = state.list[action.payload];
-      //   break;
-      // }
     }
   });
 }

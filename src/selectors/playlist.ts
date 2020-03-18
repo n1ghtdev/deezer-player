@@ -15,6 +15,8 @@ export function getPrevSong(state: State) {
   if (currentSongIndex === 0) {
     const lastIndex = state.playlist.list.length - 1;
     return state.playlist.list[lastIndex].id;
+  } else if (currentSongIndex === -1) {
+    return;
   }
 
   return state.playlist.list[currentSongIndex - 1].id;
@@ -34,6 +36,8 @@ export function getNextSong(state: State) {
 
   if (currentSongIndex === lastIndex) {
     return state.playlist.list[0].id;
+  } else if (currentSongIndex === -1) {
+    return;
   }
 
   return state.playlist.list[currentSongIndex + 1].id;
