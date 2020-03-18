@@ -12,7 +12,7 @@ export function createPlayer() {
   const audio = new Audio();
   const source = context.createMediaElementSource(audio);
   let canvas: HTMLCanvasElement = null;
-  const bufferLength = 216;
+  let bufferLength: number;
   analyser.fftSize = 1024;
 
   function setSong(songUrl: string) {
@@ -31,12 +31,19 @@ export function createPlayer() {
       audio.play();
     }
   }
+
   function pause() {
     audio.pause();
   }
+
   function changeVolume(volume: number) {
     audio.volume = volume;
   }
+
+  function setPlayback(time: number) {
+    audio.currentTime = time;
+  }
+
   function drawCanvas(canvasEl: HTMLCanvasElement) {
     if (!canvasEl) {
       return;
@@ -44,44 +51,19 @@ export function createPlayer() {
 
     canvas = canvasEl;
 
-    function playbackEventHandler(e: MouseEvent) {
-      if (canvas) {
-        const canvasRect = canvas.getBoundingClientRect();
-        const x = e.clientX - canvasRect.left;
-        console.log(e.clientX, canvasRect.left, canvas.width);
+    const canvasCtx = canvas.getContext('2d');
 
-        audio.currentTime = (x / canvas.width) * audio.duration;
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 90;
 
-        drawFrame(true);
-      }
-    }
+    // calcualte optimal buffer length from canvas width
+    bufferLength = Math.round(canvas.width / 3);
 
-    function resizeEventHandler(e: UIEvent) {
-      if (canvas) {
-        canvas.width = canvas.offsetWidth;
-      }
-    }
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (canvas) {
-      const canvasCtx = canvas.getContext('2d');
-
-      canvas.width = canvas.offsetWidth;
-      canvas.height = 90;
-
-      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
-      // setIsCanvasInit(true);
-
-      drawFrame(true);
-
-      canvas.addEventListener('click', playbackEventHandler);
-      window.addEventListener('resize', resizeEventHandler);
-
-      return () => {
-        canvas.removeEventListener('click', playbackEventHandler);
-        window.removeEventListener('resize', resizeEventHandler);
-      };
-    }
+    drawFrame(true);
   }
+
   function drawFrame(staticRender: boolean = false) {
     if (!canvas) {
       return;
@@ -97,6 +79,8 @@ export function createPlayer() {
     }
 
     let x = 0;
+
+    // round value for sharper bars
     const barWidth = Math.round(canvas.width / bufferLength);
 
     canvasCtx.fillStyle = 'rgb(255,255,255)';
@@ -104,14 +88,13 @@ export function createPlayer() {
 
     for (let i = 0; i < bufferLength; i++) {
       let barHeight = (dataArray[i] / 255) * (canvas.height - 25);
-
       if ((audio.duration / bufferLength) * i <= audio.currentTime) {
         canvasCtx.fillStyle = '#8faab5';
       } else {
         canvasCtx.fillStyle = '#dbe9ea';
       }
 
-      canvasCtx.fillRect(x, 65, barWidth - 1, -barHeight);
+      canvasCtx.fillRect(x, 65, 2, -barHeight);
 
       x = barWidth * i;
     }
@@ -121,6 +104,7 @@ export function createPlayer() {
     setSong,
     play,
     pause,
+    setPlayback,
     changeVolume,
     drawCanvas,
     drawFrame,

@@ -38,6 +38,44 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
     };
   }, [songUrl, dispatch, nextSongId]);
 
+  React.useLayoutEffect(() => {
+    const canvasRef = canvas.current;
+
+    function resizeEventHandler(e: UIEvent) {
+      if (canvasRef) {
+        canvasRef.width = canvasRef.offsetWidth;
+        Player.current.drawCanvas(canvasRef);
+      }
+    }
+
+    function playbackEventHandler(e: MouseEvent) {
+      if (canvasRef) {
+        const canvasRect = canvasRef.getBoundingClientRect();
+        const x = e.clientX - canvasRect.left;
+
+        Player.current.setPlayback(
+          (x / canvasRef.width) * Player.current.audio.duration,
+        );
+
+        Player.current.drawFrame(true);
+      }
+    }
+
+    if (canvasRef) {
+      window.addEventListener('resize', resizeEventHandler);
+      canvasRef.addEventListener('click', playbackEventHandler);
+
+      Player.current.drawCanvas(canvasRef);
+    }
+
+    return () => {
+      window.removeEventListener('resize', resizeEventHandler);
+      if (canvasRef) {
+        canvasRef.removeEventListener('click', playbackEventHandler);
+      }
+    };
+  }, [canvas, songUrl]);
+
   React.useEffect(() => {
     Player.current.changeVolume(player.volume / 100);
   }, [player.volume]);
@@ -72,11 +110,6 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
       play();
     }
   }, [player.state, dispatch, play, pause, songUrl]);
-
-  React.useLayoutEffect(() => {
-    const cleanup = Player.current.drawCanvas(canvas.current);
-    return cleanup;
-  }, [canvas, songUrl]);
 
   function getCurrentTime() {
     return Player.current.audio.currentTime;
