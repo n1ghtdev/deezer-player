@@ -5,7 +5,7 @@ import { Actions } from '@actions/player';
 const initialState: Player = {
   startedAt: 0,
   pausedAt: 0,
-  state: 'paused',
+  state: 'loading',
   duration: 0,
   currentSong: null,
   volume: 50,
@@ -38,6 +38,10 @@ export default function playerReducer(
       case types.SET_CURRENT_SONG: {
         draft.currentSong = action.payload.songId;
         draft.state = action.payload.state;
+        break;
+      }
+      case types.SET_DURATION: {
+        draft.duration = action.payload;
         break;
       }
       case types.CHANGE_VOLUME: {

@@ -1,0 +1,22 @@
+@import '@styles/vars.scss';
+
+.player {
+  &_time {
+    display: flex;
+    justify-content: space-between;
+    padding-right: 5px;
+    margin-bottom: 15px;
+    font-size: 12px;
+
+    &-current {
+      color: $textAccent;
+    }
+
+    &-duration {
+      background: #4f5b60;
+      color: #fff;
+      border-radius: 10px;
+      padding: 1px 10px;
+    }
+  }
+}

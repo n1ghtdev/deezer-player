@@ -11,6 +11,7 @@
   &_icon {
     font-size: 20px;
     margin-right: 10px;
+    color: $textAccent;
   }
 
   &_slider {
@@ -24,13 +25,13 @@
     border-radius: 0;
     &::-webkit-slider-runnable-track {
       height: 33px;
-      background: $textAccent;
+      background: $textLight;
     }
     &::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: 0px;
       height: 3px;
-      box-shadow: -100vw 0 0 100vw $text;
+      box-shadow: -100vw 0 0 100vw $textAccent;
     }
     &:focus {
       outline: none;

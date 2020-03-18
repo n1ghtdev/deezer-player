@@ -16,6 +16,7 @@ export function createPlayer() {
   analyser.fftSize = 1024;
 
   function setSong(songUrl: string) {
+    audio.preload = 'metadata';
     audio.src = songUrl;
     audio.crossOrigin = 'anonymous';
     source.connect(analyser);
@@ -42,6 +43,18 @@ export function createPlayer() {
 
   function setPlayback(time: number) {
     audio.currentTime = time;
+  }
+
+  function getPlayback(): number {
+    if (audio.src) {
+      return audio.currentTime;
+    }
+  }
+
+  function getDuration(): number {
+    if (audio.src) {
+      return audio.duration;
+    }
   }
 
   function drawCanvas(canvasEl: HTMLCanvasElement) {
@@ -88,10 +101,11 @@ export function createPlayer() {
 
     for (let i = 0; i < bufferLength; i++) {
       let barHeight = (dataArray[i] / 255) * (canvas.height - 25);
+
       if ((audio.duration / bufferLength) * i <= audio.currentTime) {
-        canvasCtx.fillStyle = '#8faab5';
+        canvasCtx.fillStyle = '#97a9b2';
       } else {
-        canvasCtx.fillStyle = '#dbe9ea';
+        canvasCtx.fillStyle = '#dee7eb';
       }
 
       canvasCtx.fillRect(x, 65, 2, -barHeight);
@@ -105,6 +119,8 @@ export function createPlayer() {
     play,
     pause,
     setPlayback,
+    getPlayback,
+    getDuration,
     changeVolume,
     drawCanvas,
     drawFrame,

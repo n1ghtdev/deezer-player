@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSong } from '@actions/player';
+import { setCurrentSong, setCurrentSongDuration } from '@actions/player';
 import { State } from '@reducers/index';
 import { getNextSong } from '@selectors/playlist';
 import { createPlayer } from '@utils/player-utils';
@@ -22,19 +22,28 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
     }
 
     const audio = Player.current.audio;
-
     function handleAudioEnded() {
       dispatch(setCurrentSong(nextSongId, 'playing'));
     }
 
+    function handleMetaData() {
+      dispatch(
+        setCurrentSongDuration(Math.round(Player.current.getDuration())),
+      );
+    }
+
     const cleanup = Player.current.setSong(songUrl);
     audio.addEventListener('ended', handleAudioEnded);
+    audio.addEventListener('loadedmetadata', handleMetaData);
 
     return () => {
-      then.current = 0;
-      raf.current = null;
+      if (raf.current) {
+        cancelAnimationFrame(raf.current);
+        raf.current = null;
+      }
       cleanup();
       audio.removeEventListener('ended', handleAudioEnded);
+      audio.removeEventListener('loadedmetadata', handleMetaData);
     };
   }, [songUrl, dispatch, nextSongId]);
 
@@ -52,12 +61,16 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
       if (canvasRef) {
         const canvasRect = canvasRef.getBoundingClientRect();
         const x = e.clientX - canvasRect.left;
+        const prevPlayback = Player.current.getPlayback();
+        const duration = Player.current.getDuration();
 
-        Player.current.setPlayback(
-          (x / canvasRef.width) * Player.current.audio.duration,
-        );
+        Player.current.setPlayback((x / canvasRef.width) * duration);
 
-        Player.current.drawFrame(true);
+        if (prevPlayback === 0 && Player.current.audio.paused) {
+          Player.current.drawFrame(true);
+        } else {
+          Player.current.drawFrame();
+        }
       }
     }
 
@@ -112,7 +125,7 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
   }, [player.state, dispatch, play, pause, songUrl]);
 
   function getCurrentTime() {
-    return Player.current.audio.currentTime;
+    return Player.current.getPlayback();
   }
 
   return {

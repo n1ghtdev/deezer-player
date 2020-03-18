@@ -12,10 +12,12 @@ import {
   playAction,
   pauseAction,
 } from '@actions/player';
-
-import './player.scss';
 import Info from './info';
 import Volume from './volume';
+import Hero from './hero';
+import Time from './time';
+
+import './player.scss';
 
 type Props = {
   song: Partial<Song>;
@@ -26,10 +28,11 @@ export default function Player(props: Props) {
 
   const canvas = React.useRef<HTMLCanvasElement>(null);
   const { getCurrentTime } = usePlayer(song?.preview, canvas);
+
+  const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
   const prevSongId = useSelector(getPrevSong);
   const nextSongId = useSelector(getNextSong);
-  const dispatch = useDispatch();
 
   const onPlay = React.useCallback(() => {
     dispatch(playAction({ startedAt: getCurrentTime() }));
@@ -60,14 +63,14 @@ export default function Player(props: Props) {
 
   return (
     <div className="player">
-      <div className="player_hero">
-        <img
-          className="player_poster"
-          src={song.album?.cover_medium}
-          alt={song.title}
+      <Hero posterSrc={song.album.cover_medium} alt={song.title}>
+        <Time
+          playerState={player.state}
+          getCurrentTime={() => getCurrentTime()}
+          duration={player.duration}
         />
         <Visualizer canvasRef={canvas} />
-      </div>
+      </Hero>
       <div className="player_bar">
         <Controls
           onPlay={onPlay}

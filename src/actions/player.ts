@@ -35,6 +35,13 @@ export function setCurrentSong(songId: number, state: PlayerState = 'paused') {
   } as const;
 }
 
+export function setCurrentSongDuration(duration: number) {
+  return {
+    type: types.SET_DURATION,
+    payload: duration,
+  } as const;
+}
+
 export function changeVolume(volume: number) {
   return {
     type: types.CHANGE_VOLUME,
@@ -47,5 +54,6 @@ export type Actions = ReturnType<
   | typeof pauseAction
   | typeof initPlayer
   | typeof setCurrentSong
+  | typeof setCurrentSongDuration
   | typeof changeVolume
 >;

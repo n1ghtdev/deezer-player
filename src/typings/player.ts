@@ -2,8 +2,8 @@ export enum types {
   PLAY = '@@player/play',
   PAUSE = '@@player/pause',
   INIT = '@@player/init',
-  RESET = '@@player/reset',
   SET_CURRENT_SONG = '@@player/set-current-song',
+  SET_DURATION = '@@player/set-duration',
   CHANGE_VOLUME = '@@player/change-volume',
 }
 
