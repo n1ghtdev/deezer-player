@@ -3,7 +3,10 @@
 .volume {
   display: flex;
   align-items: center;
-  margin-left: auto;
+
+  @media (min-width: 768px) {
+    margin-left: auto;
+  }
 
   &_icon {
     font-size: 20px;
@@ -20,6 +23,7 @@
     cursor: pointer;
     border-radius: 0;
     &::-webkit-slider-runnable-track {
+      height: 33px;
       background: $textAccent;
     }
     &::-webkit-slider-thumb {
@@ -31,7 +35,5 @@
     &:focus {
       outline: none;
     }
-
-    // style track
   }
 }

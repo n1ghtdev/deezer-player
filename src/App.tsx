@@ -57,10 +57,11 @@ export default function App() {
 
   return (
     <Container>
-      <Header>
-        <h1>VISAGE</h1>
-        <SearchBar onSubmit={handleSearchSubmit} />
-      </Header>
+      <Header
+        title="Visage"
+        searchBar={<SearchBar onSubmit={handleSearchSubmit} />}
+      />
+
       <Layout
         content={<Player song={currentSong} />}
         aside={

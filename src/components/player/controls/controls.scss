@@ -1,17 +1,32 @@
 .controls {
   display: flex;
-  margin: 0 20px;
+  flex-basis: 100%;
+  justify-content: center;
+  margin-bottom: 20px;
+
   &_button {
     background: none;
     border: none;
     cursor: pointer;
     font-size: 18px;
-    padding: 0 20px;
+    padding: 0 30px;
     &:nth-child(2) {
       font-size: 22px;
     }
     & > svg {
       vertical-align: middle;
+    }
+    &:focus {
+      outline: none;
+    }
+  }
+
+  @media (min-width: 768px) {
+    margin: 0 20px;
+    flex-basis: unset;
+    justify-content: unset;
+    &_button {
+      padding: 0 20px;
     }
   }
 }

@@ -1,11 +1,19 @@
 .layout {
   margin-top: 50px;
-  display: flex;
-  justify-content: space-between;
+
   &_content {
-    width: 64%;
+    margin-bottom: 20px;
   }
-  &_aside {
-    width: 28%;
+
+  @media (min-width: 999px) {
+    display: flex;
+    justify-content: space-between;
+    &_content {
+      width: 64%;
+      margin-bottom: 0;
+    }
+    &_aside {
+      width: 28%;
+    }
   }
 }

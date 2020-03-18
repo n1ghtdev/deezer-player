@@ -9,6 +9,8 @@ type Props = {
 };
 
 export default function Volume(props: Props) {
+  const [prevVolume, setPrevVolume] = React.useState(0);
+
   const icons = {
     '100': 'volume-up',
     '50': 'volume-down',
@@ -26,7 +28,14 @@ export default function Volume(props: Props) {
   return (
     <div className="volume">
       <FontAwesomeIcon
-        onClick={() => props.onVolumeChange(0)}
+        onClick={() => {
+          if (props.volume !== 0) {
+            setPrevVolume(props.volume);
+            props.onVolumeChange(0);
+          } else {
+            props.onVolumeChange(prevVolume);
+          }
+        }}
         className="volume_icon"
         icon={getIconByVolume(props.volume)}
       />

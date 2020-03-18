@@ -1,4 +1,6 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import './search-bar.scss';
 
 type Props = {
@@ -28,7 +30,7 @@ export default function Header(props: Props) {
         placeholder="Search"
       />
       <button className="search-bar_button" type="submit">
-        ok
+        <FontAwesomeIcon icon="search" />
       </button>
     </form>
   );
