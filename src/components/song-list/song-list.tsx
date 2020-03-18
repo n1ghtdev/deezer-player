@@ -5,7 +5,7 @@ import SongItem from './song-item';
 import './song-list.scss';
 
 type Props = {
-  songlist: Song[];
+  songlist: any;
   currentSong?: number;
 };
 

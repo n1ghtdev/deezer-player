@@ -1,3 +1,11 @@
+@import './vars.scss';
+
 body {
   margin: 0;
+  color: $text;
+  font-size: 14px;
+}
+
+button {
+  color: $text;
 }
