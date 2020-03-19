@@ -133,14 +133,14 @@ module.exports = function() {
           loader: 'url-loader',
           options: {
             limit: 10 * 1024,
-            name: 'media/[name].[hash:8].[ext]',
+            name: '/media/[name].[hash:8].[ext]',
           },
         },
         {
           test: /\.svg$/,
           loader: 'file-loader',
           options: {
-            name: 'media/[name].[hash:8].[ext]',
+            name: '/media/[name].[hash:8].[ext]',
           },
         },
       ],
