@@ -12,7 +12,7 @@ const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
 module.exports = function() {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isProduction = process.env.NODE_ENV === 'production';
-  const publicPath = process.env.PUBLIC_PATH || '/';
+  const publicPath = isProduction ? process.env.PUBLIC_PATH : '/';
 
   function getStyleLoader(preProcessor) {
     const loaders = [
@@ -133,14 +133,14 @@ module.exports = function() {
           loader: 'url-loader',
           options: {
             limit: 10 * 1024,
-            name: '/media/[name].[hash:8].[ext]',
+            name: 'media/[name].[hash:8].[ext]',
           },
         },
         {
           test: /\.svg$/,
           loader: 'file-loader',
           options: {
-            name: '/media/[name].[hash:8].[ext]',
+            name: 'media/[name].[hash:8].[ext]',
           },
         },
       ],

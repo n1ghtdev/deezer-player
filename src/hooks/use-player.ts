@@ -33,9 +33,9 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
 
     function handleMetaData() {
       dispatch(
-        setCurrentSongDuration(Math.round(Player.current.getDuration())),
+        setCurrentSongDuration(Math.round(Player.current.getDuration()))
       );
-      if (player.pausedAt !== 0) {
+      if (player.pausedAt !== 0 && Player.current.audio.paused) {
         Player.current.setPlayback(player.pausedAt);
         Player.current.drawFrame(true);
       }
@@ -54,8 +54,7 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
       audio.removeEventListener('ended', handleAudioEnded);
       audio.removeEventListener('loadedmetadata', handleMetaData);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [songUrl, dispatch, nextSongId]);
+  }, [songUrl, dispatch, nextSongId, player.pausedAt]);
 
   React.useLayoutEffect(() => {
     const canvasRef = canvas.current;
