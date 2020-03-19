@@ -11,12 +11,13 @@ function createRandomUint8Array(length: number): Uint8Array {
   const array = new Uint8Array(length);
 
   return array.map(
-    (num: number) => Math.floor(Math.random() * (200 - 75 + 1)) + 50,
+    (num: number) => Math.floor(Math.random() * (200 - 75 + 1)) + 50
   );
 }
 
 export function createPlayer() {
   const { analyser, context } = createAudioContext();
+  let contextAllowed = false;
   const audio = new Audio();
   const source = context.createMediaElementSource(audio);
   let canvas: HTMLCanvasElement = null;
@@ -37,6 +38,10 @@ export function createPlayer() {
   }
 
   function play() {
+    context.resume().then(() => {
+      console.log('Audio Context resumed');
+    });
+
     if (audio.src) {
       audio.play();
     }
