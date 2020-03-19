@@ -1,5 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconName } from '@fortawesome/fontawesome-svg-core';
 
 import './volume.scss';
 
@@ -17,8 +18,10 @@ export default function Volume(props: Props) {
     '25': 'volume-off',
     '0': 'volume-mute',
   };
-  function getIconByVolume(volume: string): string {
-    return icons[Object.keys(icons).find((key: string) => key >= volume)];
+  function getIconByVolume(volume: number): string {
+    return icons[
+      Object.keys(icons).find((key: string) => Number(key) >= volume)
+    ];
   }
 
   function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -37,7 +40,7 @@ export default function Volume(props: Props) {
           }
         }}
         className="volume_icon"
-        icon={getIconByVolume(props.volume)}
+        icon={getIconByVolume(props.volume) as IconName}
       />
       <input
         className="volume_slider"

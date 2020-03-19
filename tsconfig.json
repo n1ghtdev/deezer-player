@@ -22,7 +22,8 @@
       "@reducers/*": ["src/reducers/*"],
       "@actions/*": ["src/actions/*"],
       "@typings/*": ["src/typings/*"],
-      "@selectors/*": ["src/selectors/*"]
+      "@selectors/*": ["src/selectors/*"],
+      "@assets/*": ["src/assets/*"]
     }
   },
   "include": ["src/**/*"],

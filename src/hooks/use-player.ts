@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setCurrentSong, setCurrentSongDuration } from '@actions/player';
 import { State } from '@reducers/index';
 import { getNextSong } from '@selectors/playlist';
 import { createPlayer } from '@utils/player-utils';
 
-export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
+type PlayerProps = {
+  songUrl: string;
+  canvas: MutableRefObject<HTMLCanvasElement>;
+};
+
+export default function usePlayer<PlayerProps>(songUrl, canvas) {
   const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
   const nextSongId = useSelector(getNextSong);

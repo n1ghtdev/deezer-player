@@ -1,7 +1,7 @@
 import React from 'react';
 import './song-item.scss';
 import { formatSeconds } from '@utils/format-seconds';
-import IconPlaying from '../../../assets/svg/playing.svg';
+import IconPlaying from '@assets/svg/playing.svg';
 
 type Props = {
   title: string;

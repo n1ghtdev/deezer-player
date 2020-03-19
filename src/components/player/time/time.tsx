@@ -1,12 +1,12 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
+import { formatSeconds } from '@utils/format-seconds';
+import { State } from '@reducers/index';
 
 import './time.scss';
-import { formatSeconds } from '@utils/format-seconds';
-import { useSelector } from 'react-redux';
-import { State } from '@reducers/';
 
 type Props = {
-  getCurrentTime: number;
+  getCurrentTime: () => number;
 };
 
 export default function Time(props: Props) {

@@ -63,7 +63,7 @@ export default function Player(props: Props) {
 
   return (
     <div className="player">
-      <Hero posterSrc={song.album.cover_medium} alt={song.title}>
+      <Hero posterSrc={song.album.cover_medium} posterAlt={song.title}>
         <Time getCurrentTime={() => getCurrentTime()} />
         <Visualizer canvasRef={canvas} />
       </Hero>

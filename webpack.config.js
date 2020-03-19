@@ -14,6 +14,9 @@ module.exports = function() {
   function getStyleLoader(preProcessor) {
     const loaders = [
       isDevelopment && 'style-loader',
+      isProduction && {
+        loader: MiniCssExtractPlugin.loader,
+      },
       {
         loader: 'css-loader',
       },
@@ -76,6 +79,7 @@ module.exports = function() {
         '@styles': path.resolve('src', 'styles'),
         '@utils': path.resolve('src', 'utils'),
         '@selectors': path.resolve('src', 'selectors'),
+        '@assets': path.resolve('src', 'assets'),
       },
     },
     optimization: {
