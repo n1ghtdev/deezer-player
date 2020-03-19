@@ -7,6 +7,14 @@ function createAudioContext() {
   return { context, analyser };
 }
 
+function createRandomUint8Array(length: number): Uint8Array {
+  const array = new Uint8Array(length);
+
+  return array.map(
+    (num: number) => Math.floor(Math.random() * (200 - 75 + 1)) + 50,
+  );
+}
+
 export function createPlayer() {
   const { analyser, context } = createAudioContext();
   const audio = new Audio();
@@ -22,6 +30,7 @@ export function createPlayer() {
     source.connect(analyser);
     analyser.connect(context.destination);
 
+    // return cleanup function for useEffect cleanup
     return () => {
       analyser.disconnect();
     };
@@ -34,7 +43,9 @@ export function createPlayer() {
   }
 
   function pause() {
-    audio.pause();
+    if (!audio.paused && audio.src) {
+      audio.pause();
+    }
   }
 
   function changeVolume(volume: number) {
@@ -69,12 +80,12 @@ export function createPlayer() {
     canvas.width = canvas.offsetWidth;
     canvas.height = 90;
 
-    // calcualte optimal buffer length from canvas width
     bufferLength = Math.round(canvas.width / 3);
-
     canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-    drawFrame(true);
+    if (audio.paused) {
+      drawFrame(true);
+    }
   }
 
   function drawFrame(staticRender: boolean = false) {
@@ -83,17 +94,18 @@ export function createPlayer() {
     }
 
     const canvasCtx = canvas.getContext('2d')!;
-    const dataArray = new Uint8Array(bufferLength);
+    let dataArray = new Uint8Array(bufferLength);
 
+    // instead of fetching mp3 and calculating whole buffer
+    // we'll just fill dataArray with random values
+    // it is much performant and not crucial to UI/UX
     if (staticRender) {
-      analyser.getByteTimeDomainData(dataArray);
+      dataArray = createRandomUint8Array(bufferLength);
     } else {
       analyser.getByteFrequencyData(dataArray);
     }
 
     let x = 0;
-
-    // round value for sharper bars
     const barWidth = Math.round(canvas.width / bufferLength);
 
     canvasCtx.fillStyle = 'rgb(255,255,255)';
@@ -101,7 +113,6 @@ export function createPlayer() {
 
     for (let i = 0; i < bufferLength; i++) {
       let barHeight = (dataArray[i] / 255) * (canvas.height - 25);
-
       if ((audio.duration / bufferLength) * i <= audio.currentTime) {
         canvasCtx.fillStyle = '#97a9b2';
       } else {
