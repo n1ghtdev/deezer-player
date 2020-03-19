@@ -1,11 +1,8 @@
 import { types, InitSongProps, PlayerState } from '@typings/player';
 
-export function playAction({ startedAt }: { startedAt: number }) {
+export function playAction() {
   return {
     type: types.PLAY,
-    payload: {
-      startedAt,
-    },
   } as const;
 }
 

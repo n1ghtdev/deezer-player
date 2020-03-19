@@ -10,7 +10,6 @@ export enum types {
 export type PlayerState = 'playing' | 'paused' | 'loading';
 
 export type Player = {
-  startedAt: number;
   pausedAt: number;
   state: PlayerState;
   duration: number;

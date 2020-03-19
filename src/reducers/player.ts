@@ -3,7 +3,6 @@ import { Player, types } from '@typings/player';
 import { Actions } from '@actions/player';
 
 const initialState: Player = {
-  startedAt: 0,
   pausedAt: 0,
   state: 'loading',
   duration: 0,
@@ -18,7 +17,6 @@ export default function playerReducer(
   return produce(state, draft => {
     switch (action.type) {
       case types.PLAY: {
-        draft.startedAt = action.payload.startedAt;
         draft.state = 'playing';
         break;
       }
@@ -30,12 +28,12 @@ export default function playerReducer(
       case types.INIT: {
         draft.state = 'paused';
         draft.currentSong = action.payload.currentSong;
-        draft.startedAt = action.payload.startedAt;
         draft.pausedAt = action.payload.pausedAt;
         draft.duration = action.payload.duration;
         break;
       }
       case types.SET_CURRENT_SONG: {
+        draft.pausedAt = 0;
         draft.currentSong = action.payload.songId;
         draft.state = action.payload.state;
         break;

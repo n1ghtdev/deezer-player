@@ -30,6 +30,10 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
       dispatch(
         setCurrentSongDuration(Math.round(Player.current.getDuration())),
       );
+      if (player.pausedAt !== 0) {
+        Player.current.setPlayback(player.pausedAt);
+        Player.current.drawFrame(true);
+      }
     }
 
     const cleanup = Player.current.setSong(songUrl);
@@ -45,6 +49,7 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
       audio.removeEventListener('ended', handleAudioEnded);
       audio.removeEventListener('loadedmetadata', handleMetaData);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [songUrl, dispatch, nextSongId]);
 
   React.useLayoutEffect(() => {
@@ -130,5 +135,6 @@ export default function usePlayer(songUrl: string, canvas: HTMLCanvasElement) {
 
   return {
     getCurrentTime,
+    setPlayback: Player.current.setPlayback,
   };
 }

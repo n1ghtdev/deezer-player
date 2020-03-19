@@ -1,21 +1,20 @@
 import React from 'react';
 
 import './time.scss';
-import { PlayerState } from '@typings/player';
 import { formatSeconds } from '@utils/format-seconds';
+import { useSelector } from 'react-redux';
+import { State } from '@reducers/';
 
 type Props = {
   getCurrentTime: number;
-  duration: number;
-  playerState: PlayerState;
 };
 
 export default function Time(props: Props) {
-  const { getCurrentTime, duration, playerState } = props;
+  const { getCurrentTime } = props;
   const raf = React.useRef(null);
   const [currentTime, setCurrentTime] = React.useState(0);
+  const player = useSelector((state: State) => state.player);
 
-  // TODO: raf cleanup
   React.useEffect(() => {
     let then = 0;
 
@@ -30,16 +29,20 @@ export default function Time(props: Props) {
         setCurrentTime(Math.round(getCurrentTime()));
       }
     }
-    if (playerState === 'playing') {
+    if (player.state === 'playing') {
       then = Date.now();
       loop();
+    } else if (player.state === 'paused') {
+      setCurrentTime(Math.round(player.pausedAt));
     }
-  }, [playerState, getCurrentTime]);
+  }, [player.state, player.pausedAt, getCurrentTime]);
 
   return (
     <div className="player_time">
       <div className="player_time-current">{formatSeconds(currentTime)}</div>
-      <div className="player_time-duration">{formatSeconds(duration)}</div>
+      <div className="player_time-duration">
+        {formatSeconds(player.duration)}
+      </div>
     </div>
   );
 }

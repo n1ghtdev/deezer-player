@@ -27,7 +27,7 @@ export default function Player(props: Props) {
   const { song } = props;
 
   const canvas = React.useRef<HTMLCanvasElement>(null);
-  const { getCurrentTime, setPlayback } = usePlayer(song?.preview, canvas);
+  const { getCurrentTime } = usePlayer(song?.preview, canvas);
 
   const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
@@ -64,11 +64,7 @@ export default function Player(props: Props) {
   return (
     <div className="player">
       <Hero posterSrc={song.album.cover_medium} alt={song.title}>
-        <Time
-          playerState={player.state}
-          getCurrentTime={() => getCurrentTime()}
-          duration={player.duration}
-        />
+        <Time getCurrentTime={() => getCurrentTime()} />
         <Visualizer canvasRef={canvas} />
       </Hero>
       <div className="player_bar">
