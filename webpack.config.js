@@ -7,9 +7,12 @@ const postcssPresetEnv = require('postcss-preset-env');
 const postcssFlexbugsFixes = require('postcss-flexbugs-fixes');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
+const dotenv = require('dotenv').config({ path: __dirname + '/.env' });
+
 module.exports = function() {
   const isDevelopment = process.env.NODE_ENV === 'development';
   const isProduction = process.env.NODE_ENV === 'production';
+  const publicPath = process.env.PUBLIC_PATH || '/';
 
   function getStyleLoader(preProcessor) {
     const loaders = [
@@ -61,7 +64,7 @@ module.exports = function() {
     ].filter(Boolean),
     output: {
       path: isProduction ? path.resolve(process.cwd(), 'build') : undefined,
-      publicPath: '/',
+      publicPath: publicPath,
       filename: isProduction ? 'js/[name].[contenthash:8].js' : '[name].js',
       chunkFilename: isProduction
         ? 'js/[name].[contenthash:8].chunk.js'
@@ -165,13 +168,11 @@ module.exports = function() {
                   minifyURLs: true,
                 },
               }
-            : undefined,
-        ),
+            : undefined
+        )
       ),
       new webpack.DefinePlugin({
-        'process.env': {
-          NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-        },
+        'process.env': JSON.stringify(dotenv.parsed),
       }),
       isDevelopment && new webpack.HotModuleReplacementPlugin(),
       isProduction &&
@@ -184,6 +185,7 @@ module.exports = function() {
         checkSyntacticErrors: true,
       }),
     ].filter(Boolean),
+
     devServer: {
       hot: true,
       historyApiFallback: true,
