@@ -1,12 +1,12 @@
-import { types, InitSongProps, PlayerState } from '@typings/player';
+import { types, InitSongProps } from '@typings/player';
 
-export function playAction() {
+export function play() {
   return {
     type: types.PLAY,
   } as const;
 }
 
-export function pauseAction({ pausedAt }: { pausedAt: number }) {
+export function pause({ pausedAt }: { pausedAt: number }) {
   return {
     type: types.PAUSE,
     payload: {
@@ -22,19 +22,18 @@ export function initPlayer(payload: InitSongProps) {
   } as const;
 }
 
-export function setCurrentSong(songId: number, state: PlayerState = 'paused') {
+export function setSongRequest(songId: number) {
   return {
-    type: types.SET_CURRENT_SONG,
+    type: types.SET_SONG_REQUEST,
     payload: {
       songId,
-      state,
     },
   } as const;
 }
 
-export function setCurrentSongDuration(duration: number) {
+export function setSongSuccess(duration: number) {
   return {
-    type: types.SET_DURATION,
+    type: types.SET_SONG_SUCCESS,
     payload: duration,
   } as const;
 }
@@ -47,10 +46,10 @@ export function changeVolume(volume: number) {
 }
 
 export type Actions = ReturnType<
-  | typeof playAction
-  | typeof pauseAction
+  | typeof play
+  | typeof pause
   | typeof initPlayer
-  | typeof setCurrentSong
-  | typeof setCurrentSongDuration
+  | typeof setSongRequest
+  | typeof setSongSuccess
   | typeof changeVolume
 >;

@@ -1,7 +1,8 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+
 import { Player } from '@typings/player';
 import { Playlist } from '@typings/playlist';
-import { useDispatch } from 'react-redux';
 import { getSongsSuccess } from '@actions/playlist';
 import { initPlayer } from '@actions/player';
 
@@ -28,7 +29,7 @@ export default function usePlayerCache() {
     try {
       localStorage.setItem(
         'audio-player',
-        JSON.stringify({ playlist: playlist.list, player }),
+        JSON.stringify({ playlist: playlist.list, player })
       );
     } catch (err) {
       console.error(err);

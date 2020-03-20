@@ -9,7 +9,7 @@ type Props = {
   volume: number;
 };
 
-export default function Volume(props: Props) {
+export default function Volume({ volume, onVolumeChange }: Props) {
   const [prevVolume, setPrevVolume] = React.useState(0);
 
   const icons = {
@@ -26,26 +26,26 @@ export default function Volume(props: Props) {
 
   function handleVolumeChange(e: React.ChangeEvent<HTMLInputElement>) {
     const target = e.target as HTMLInputElement;
-    props.onVolumeChange(Number(target.value));
+    onVolumeChange(Number(target.value));
   }
   return (
     <div className="volume">
       <FontAwesomeIcon
         onClick={() => {
-          if (props.volume !== 0) {
-            setPrevVolume(props.volume);
-            props.onVolumeChange(0);
+          if (volume !== 0) {
+            setPrevVolume(volume);
+            onVolumeChange(0);
           } else {
-            props.onVolumeChange(prevVolume);
+            onVolumeChange(prevVolume);
           }
         }}
         className="volume_icon"
-        icon={getIconByVolume(props.volume) as IconName}
+        icon={getIconByVolume(volume) as IconName}
       />
       <input
         className="volume_slider"
         type="range"
-        value={props.volume}
+        value={volume}
         onChange={handleVolumeChange}
         min={0}
         max={100}

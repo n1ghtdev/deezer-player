@@ -9,6 +9,14 @@
   box-sizing: inherit;
 }
 
+html,
+body {
+  overflow-y: scroll;
+  @media (min-height: 736px) {
+    overflow: hidden;
+  }
+}
+
 body {
   margin: 0;
   color: $text;

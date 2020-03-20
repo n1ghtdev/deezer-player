@@ -4,9 +4,13 @@
   &_time {
     display: flex;
     justify-content: space-between;
-    padding-right: 5px;
     margin-bottom: 15px;
     font-size: 12px;
+    padding: 10px;
+
+    @media (min-width: 768px) {
+      padding: 0 5px 0 0;
+    }
 
     &-current {
       color: $textAccent;

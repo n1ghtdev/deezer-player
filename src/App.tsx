@@ -1,16 +1,18 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { getSongsByArtist } from '@actions/playlist';
+import { State } from '@reducers/index';
+import { getSong } from '@selectors/player';
+import { configureIcons } from '@utils/configure-icons';
+import usePlayerCache from '@hooks/use-player-cache';
+
 import Container from '@components/container';
 import Layout from '@components/layout';
 import Header from '@components/header';
 import SearchBar from '@components/search-bar';
 import SongList from '@components/song-list';
-import { getSongsByArtist } from '@actions/playlist';
-import { State } from '@reducers/index';
 import Player from '@components/player';
-import { getSong } from '@selectors/player';
-import { configureIcons } from '@utils/configure-icons';
-import usePlayerCache from '@hooks/use-player-cache';
 
 configureIcons();
 

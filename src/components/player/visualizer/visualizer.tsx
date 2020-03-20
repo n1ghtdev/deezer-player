@@ -6,7 +6,6 @@ type Props = {
   canvasRef: any;
 };
 
-export default function Visualizer(props: Props) {
-  const { canvasRef } = props;
-  return <canvas className="visualizer" ref={canvasRef}></canvas>;
+export default function Visualizer({ canvasRef }: Props) {
+  return <canvas className="visualizer" ref={canvasRef} height={0}></canvas>;
 }

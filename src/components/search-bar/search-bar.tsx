@@ -7,12 +7,12 @@ type Props = {
   onSubmit: (query: string) => void;
 };
 
-export default function Header(props: Props) {
+export default function Header({ onSubmit }: Props) {
   const [value, setValue] = React.useState('');
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    props.onSubmit(value);
+    onSubmit(value);
   }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {

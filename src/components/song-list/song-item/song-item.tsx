@@ -1,7 +1,12 @@
 import React from 'react';
-import './song-item.scss';
+import { useSelector } from 'react-redux';
+
+import { State } from '@reducers/index';
 import { formatSeconds } from '@utils/format-seconds';
-import IconPlaying from '@assets/svg/playing.svg';
+
+import IconPlaying from './icon-playing';
+
+import './song-item.scss';
 
 type Props = {
   title: string;
@@ -15,6 +20,10 @@ type Props = {
 export default function SongItem(props: Props) {
   const { title, duration, index, id, active, onChangeSong } = props;
 
+  const isPlaying = useSelector(
+    (state: State) => state.player.state === 'playing'
+  );
+
   function handleChangeSong() {
     if (active) {
       return;
@@ -27,7 +36,7 @@ export default function SongItem(props: Props) {
       onClick={handleChangeSong}
     >
       <span className="song-item_number">
-        {active ? <img src={IconPlaying} alt="" /> : index}
+        {active ? <IconPlaying playing={isPlaying} /> : index}
       </span>
       <span className="song-item_name">{title}</span>
       <span className="song-item_duration">{formatSeconds(duration)}</span>
