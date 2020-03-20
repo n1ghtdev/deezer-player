@@ -1,4 +1,4 @@
-import { types, InitSongProps, PlayerState } from '@typings/player';
+import { types, InitSongProps } from '@typings/player';
 
 export function play() {
   return {

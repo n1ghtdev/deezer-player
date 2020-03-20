@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { formatSeconds } from '@utils/format-seconds';
 import { State } from '@reducers/index';
+import { formatSeconds } from '@utils/format-seconds';
 
 import './time.scss';
 
@@ -11,9 +11,10 @@ type Props = {
 
 export default function Time(props: Props) {
   const { getCurrentTime } = props;
-  const raf = React.useRef(null);
-  const [currentTime, setCurrentTime] = React.useState(0);
+
   const player = useSelector((state: State) => state.player);
+  const [currentTime, setCurrentTime] = React.useState(0);
+  const raf = React.useRef(null);
 
   React.useEffect(() => {
     let then = 0;

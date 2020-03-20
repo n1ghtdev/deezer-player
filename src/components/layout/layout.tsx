@@ -1,4 +1,5 @@
 import React from 'react';
+
 import './layout.scss';
 
 type Props = {
@@ -6,8 +7,7 @@ type Props = {
   aside: React.ReactNode;
 };
 
-export default function Layout(props: Props) {
-  const { content, aside } = props;
+export default function Layout({ content, aside }: Props) {
   return (
     <div className="layout">
       <div className="layout_content">{content}</div>

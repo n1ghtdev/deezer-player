@@ -1,6 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+
+import { State } from '@reducers/index';
 import { formatSeconds } from '@utils/format-seconds';
+
 import IconPlaying from './icon-playing';
 
 import './song-item.scss';

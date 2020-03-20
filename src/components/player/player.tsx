@@ -1,12 +1,14 @@
 import React from 'react';
-import { Song } from '@typings/playlist';
-import usePlayer from '@hooks/use-player';
-import Visualizer from './visualizer';
-import Controls from './controls';
 import { useSelector, useDispatch } from 'react-redux';
+
+import { Song } from '@typings/playlist';
 import { State } from '@reducers/index';
 import { getPrevSong, getNextSong } from '@selectors/playlist';
 import { changeVolume, play, pause, setSongRequest } from '@actions/player';
+import usePlayer from '@hooks/use-player';
+
+import Visualizer from './visualizer';
+import Controls from './controls';
 import Info from './info';
 import Volume from './volume';
 import Hero from './hero';
@@ -19,9 +21,7 @@ type Props = {
   song: Partial<Song>;
 };
 
-export default function Player(props: Props) {
-  const { song } = props;
-
+export default function Player({ song }: Props) {
   const visualizerRef = React.useRef<HTMLCanvasElement>(null);
   const progressBarRef = React.useRef<HTMLCanvasElement>(null);
 

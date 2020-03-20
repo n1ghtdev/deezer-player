@@ -1,8 +1,10 @@
 import React from 'react';
-import { Song } from '@typings/playlist';
-import SongItem from './song-item';
-import { setSongRequest } from '@actions/player';
 import { useDispatch } from 'react-redux';
+
+import { Song } from '@typings/playlist';
+import { setSongRequest } from '@actions/player';
+
+import SongItem from './song-item';
 
 import './song-list.scss';
 
@@ -11,8 +13,7 @@ type Props = {
   currentSong?: number;
 };
 
-export default function SongList(props: Props) {
-  const { songlist, currentSong } = props;
+export default function SongList({ songlist, currentSong }: Props) {
   const dispatch = useDispatch();
 
   const handleChangeSong = React.useCallback(

@@ -1,7 +1,9 @@
 import { ThunkAction } from 'redux-thunk';
 import { Action } from 'redux';
+
 import { State } from '@reducers/index';
 import { types } from '@typings/playlist';
+
 import { searchByArtist } from '../api';
 import { setSongRequest, pause } from './player';
 
@@ -17,7 +19,7 @@ export function getSongsByArtist(artist: string): ThunkResult {
           dispatch(getSongsSuccess(response.data));
 
           // pause to prevent from autoplaying
-          dispatch(pause(0));
+          dispatch(pause({ pausedAt: 0 }));
           dispatch(setSongRequest(response.data[0].id));
         }
       },

@@ -10,6 +10,7 @@ type Props = {
 
 export default function Hero(props: Props) {
   const { posterSrc, posterAlt, children } = props;
+
   return (
     <div className="player_hero">
       <div className="player_poster">

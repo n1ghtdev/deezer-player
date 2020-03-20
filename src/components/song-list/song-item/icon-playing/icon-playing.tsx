@@ -7,22 +7,6 @@ type Props = {
 };
 
 export default function IconPlaying({ playing }: Props) {
-  const raf = React.useRef(null);
-
-  React.useEffect(() => {
-    let then = 0;
-
-    function animationLoop() {
-      raf.current = requestAnimationFrame(animationLoop);
-
-      let now = Date.now();
-      let elapsed = now - then;
-
-      if (elapsed > 200) {
-        then = now - (elapsed % 200);
-      }
-    }
-  }, [playing]);
   return (
     <svg
       className={`icon-playing ${playing ? 'active' : ''}`}
