@@ -33,6 +33,16 @@
       height: 3px;
       box-shadow: -100vw 0 0 100vw $textAccent;
     }
+    &::-moz-range-track {
+      height: 3px;
+      background: $textLight;
+    }
+    &::-moz-range-thumb {
+      background: transparent;
+      width: 0px;
+      height: 3px;
+      box-shadow: -100vw 0 0 100vw $textAccent;
+    }
     &:focus {
       outline: none;
     }
