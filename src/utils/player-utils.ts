@@ -20,7 +20,6 @@ export function createPlayer() {
   const audio = new Audio();
   const source = context.createMediaElementSource(audio);
 
-  let canvas: HTMLCanvasElement = null;
   let dataArray: Uint8Array;
   let bufferLength: number;
 
@@ -33,7 +32,6 @@ export function createPlayer() {
     source.connect(analyser);
     analyser.connect(context.destination);
 
-    // return cleanup function for useEffect cleanup
     return () => {
       analyser.disconnect();
     };
@@ -82,51 +80,33 @@ export function createPlayer() {
     progressBarCanvas: HTMLCanvasElement,
     isFirstRender: boolean
   ) {
+    function clickPlaybackHandler(e: MouseEvent) {
+      const canvasRect = this.getBoundingClientRect();
+      const x = e.clientX - canvasRect.left;
+      const prevPlayback = getPlayback();
+      const duration = getDuration();
+
+      setPlayback((x / this.width) * duration);
+
+      if (prevPlayback === 0 && audio.paused) {
+        drawVisualizerFrame(visualizerCanvas, true);
+        drawProgressBarFrame(progressBarCanvas);
+      } else {
+        drawVisualizerFrame(visualizerCanvas);
+        drawProgressBarFrame(progressBarCanvas);
+      }
+    }
     if (visualizerCanvas && progressBarCanvas) {
-      function resizeEventHandler(e: UIEvent) {
-        visualizer.width = visualizer.offsetWidth;
-        Player.current.drawCanvas(visualizer, progressBar);
-      }
-
-      function clickPlaybackHandler(e: MouseEvent, canvas: HTMLCanvasElement) {
-        const canvasRect = canvas.getBoundingClientRect();
-        const x = e.clientX - canvasRect.left;
-        const prevPlayback = getPlayback();
-        const duration = getDuration();
-
-        setPlayback((x / canvas.width) * duration);
-
-        if (prevPlayback === 0 && audio.paused) {
-          drawVisualizerFrame(visualizerCanvas, true);
-          drawProgressBarFrame(progressBarCanvas);
-        } else {
-          drawVisualizerFrame(visualizerCanvas);
-          drawProgressBarFrame(progressBarCanvas);
-        }
-      }
-
-      window.addEventListener('resize', resizeEventHandler);
-      visualizerCanvas.addEventListener('click', (e: MouseEvent) =>
-        clickPlaybackHandler(e, visualizerCanvas)
-      );
-      progressBarCanvas.addEventListener('click', (e: MouseEvent) =>
-        clickPlaybackHandler(e, progressBarCanvas)
-      );
+      visualizerCanvas.addEventListener('click', clickPlaybackHandler);
+      progressBarCanvas.addEventListener('click', clickPlaybackHandler);
 
       drawVisualizer(visualizerCanvas);
       drawProgressBar(progressBarCanvas);
       drawFrame(visualizerCanvas, progressBarCanvas, isFirstRender);
 
       return () => {
-        window.removeEventListener('resize', resizeEventHandler);
-        visualizerCanvas.removeEventListener(
-          'click',
-          visualizerPlaybackHandler
-        );
-        progressBarCanvas.removeEventListener(
-          'click',
-          progressBarPlaybackHandler
-        );
+        visualizerCanvas.removeEventListener('click', clickPlaybackHandler);
+        progressBarCanvas.removeEventListener('click', clickPlaybackHandler);
       };
     }
   }

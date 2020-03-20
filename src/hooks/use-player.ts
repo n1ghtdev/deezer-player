@@ -21,10 +21,7 @@ export default function usePlayer<PlayerProps>(
   const nextSongId = useSelector(getNextSong);
 
   const Player = React.useRef(createPlayer());
-
-  const then = React.useRef(0);
   const raf = React.useRef(null);
-  const delay = React.useRef(1000 / 20);
 
   React.useEffect(() => {
     if (!songUrl) {
@@ -38,7 +35,6 @@ export default function usePlayer<PlayerProps>(
     function handleMetaData() {
       if (player.pausedAt !== 0 && Player.current.audio.paused) {
         Player.current.setPlayback(player.pausedAt);
-        // Player.current.drawFrame(true);
       }
       dispatch(setSongSuccess(Math.round(Player.current.getDuration())));
     }
@@ -57,7 +53,8 @@ export default function usePlayer<PlayerProps>(
       audio.removeEventListener('ended', handleAudioEnded);
       audio.removeEventListener('loadedmetadata', handleMetaData);
     };
-  }, [songUrl, dispatch, nextSongId, player.pausedAt]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [songUrl, dispatch, nextSongId]);
 
   React.useLayoutEffect(() => {
     const visualizer = visualizerRef.current;
@@ -81,20 +78,22 @@ export default function usePlayer<PlayerProps>(
   }, [player.volume]);
 
   const play = React.useCallback(() => {
+    let then = 0;
+
     function renderLoop() {
       raf.current = requestAnimationFrame(renderLoop);
 
       let now = Date.now();
-      let elapsed = now - then.current;
+      let elapsed = now - then;
 
-      if (elapsed > delay.current) {
-        then.current = now - (elapsed % delay.current);
+      if (elapsed > 50) {
+        then = now - (elapsed % 50);
         Player.current.drawFrame(visualizerRef.current, progressBarRef.current);
       }
     }
 
     Player.current.play();
-    then.current = Date.now();
+    then = Date.now();
     renderLoop();
   }, [progressBarRef, visualizerRef]);
 

@@ -28,6 +28,7 @@ export default function SongList(props: Props) {
         songlist.map((song: Song, index: number) => (
           <SongItem
             id={song.id}
+            key={song.id}
             index={index + 1}
             title={song.title_short}
             duration={song.duration}

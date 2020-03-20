@@ -10,7 +10,11 @@ type Props = {
 export default function Bar({ progressBarRef, children }: Props) {
   return (
     <div className="player-bar">
-      <canvas ref={progressBarRef} className="player-bar_progressbar"></canvas>
+      <canvas
+        height={0}
+        ref={progressBarRef}
+        className="player-bar_progressbar"
+      ></canvas>
       <div className="player-bar_content">{children}</div>
     </div>
   );

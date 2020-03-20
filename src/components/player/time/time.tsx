@@ -30,13 +30,10 @@ export default function Time(props: Props) {
       }
     }
 
-    if (player.state === 'playing') {
+    if (player.state !== 'loading') {
       then = Date.now();
       loop();
-    } else if (player.state !== 'playing') {
-      setCurrentTime(Math.round(player.pausedAt));
     }
-
     return () => {
       if (raf.current) {
         cancelAnimationFrame(raf.current);
