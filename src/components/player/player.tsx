@@ -6,16 +6,12 @@ import Controls from './controls';
 import { useSelector, useDispatch } from 'react-redux';
 import { State } from '@reducers/index';
 import { getPrevSong, getNextSong } from '@selectors/playlist';
-import {
-  setCurrentSong,
-  changeVolume,
-  playAction,
-  pauseAction,
-} from '@actions/player';
+import { changeVolume, play, pause, setSongRequest } from '@actions/player';
 import Info from './info';
 import Volume from './volume';
 import Hero from './hero';
 import Time from './time';
+import Bar from './bar';
 
 import './player.scss';
 
@@ -26,8 +22,14 @@ type Props = {
 export default function Player(props: Props) {
   const { song } = props;
 
-  const canvas = React.useRef<HTMLCanvasElement>(null);
-  const { getCurrentTime } = usePlayer(song?.preview, canvas);
+  const visualizerRef = React.useRef<HTMLCanvasElement>(null);
+  const progressBarRef = React.useRef<HTMLCanvasElement>(null);
+
+  const { getCurrentTime } = usePlayer(
+    song?.preview,
+    visualizerRef,
+    progressBarRef
+  );
 
   const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
@@ -35,26 +37,26 @@ export default function Player(props: Props) {
   const nextSongId = useSelector(getNextSong);
 
   const onPlay = React.useCallback(() => {
-    dispatch(playAction());
+    dispatch(play());
   }, [dispatch]);
 
   const onPause = React.useCallback(() => {
-    dispatch(pauseAction({ pausedAt: getCurrentTime() }));
+    dispatch(pause({ pausedAt: getCurrentTime() }));
   }, [dispatch, getCurrentTime]);
 
   const onPrevSong = React.useCallback(() => {
-    dispatch(setCurrentSong(prevSongId, 'playing'));
+    dispatch(setSongRequest(prevSongId));
   }, [dispatch, prevSongId]);
 
   const onNextSong = React.useCallback(() => {
-    dispatch(setCurrentSong(nextSongId, 'playing'));
+    dispatch(setSongRequest(nextSongId));
   }, [dispatch, nextSongId]);
 
   const onVolumeChange = React.useCallback(
     (volume: number) => {
       dispatch(changeVolume(volume));
     },
-    [dispatch],
+    [dispatch]
   );
 
   if (!song) {
@@ -65,9 +67,9 @@ export default function Player(props: Props) {
     <div className="player">
       <Hero posterSrc={song.album.cover_medium} posterAlt={song.title}>
         <Time getCurrentTime={() => getCurrentTime()} />
-        <Visualizer canvasRef={canvas} />
+        <Visualizer canvasRef={visualizerRef} />
       </Hero>
-      <div className="player_bar">
+      <Bar progressBarRef={progressBarRef}>
         <Controls
           onPlay={onPlay}
           onPause={onPause}
@@ -81,7 +83,7 @@ export default function Player(props: Props) {
           artist={song.artist.name}
         />
         <Volume onVolumeChange={onVolumeChange} volume={player.volume} />
-      </div>
+      </Bar>
     </div>
   );
 }

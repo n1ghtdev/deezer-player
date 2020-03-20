@@ -17,11 +17,13 @@ function createRandomUint8Array(length: number): Uint8Array {
 
 export function createPlayer() {
   const { analyser, context } = createAudioContext();
-  let contextAllowed = false;
   const audio = new Audio();
   const source = context.createMediaElementSource(audio);
+
   let canvas: HTMLCanvasElement = null;
+  let dataArray: Uint8Array;
   let bufferLength: number;
+
   analyser.fftSize = 1024;
 
   function setSong(songUrl: string) {
@@ -38,9 +40,11 @@ export function createPlayer() {
   }
 
   function play() {
-    context.resume().then(() => {
-      console.log('Audio Context resumed');
-    });
+    if (context.state === 'suspended') {
+      context.resume().then(() => {
+        console.log('Audio Context resumed');
+      });
+    }
 
     if (audio.src) {
       audio.play();
@@ -73,40 +77,92 @@ export function createPlayer() {
     }
   }
 
-  function drawCanvas(canvasEl: HTMLCanvasElement) {
-    if (!canvasEl) {
-      return;
+  function drawCanvas(
+    visualizerCanvas: HTMLCanvasElement,
+    progressBarCanvas: HTMLCanvasElement,
+    isFirstRender: boolean
+  ) {
+    if (visualizerCanvas && progressBarCanvas) {
+      function resizeEventHandler(e: UIEvent) {
+        visualizer.width = visualizer.offsetWidth;
+        Player.current.drawCanvas(visualizer, progressBar);
+      }
+
+      function clickPlaybackHandler(e: MouseEvent, canvas: HTMLCanvasElement) {
+        const canvasRect = canvas.getBoundingClientRect();
+        const x = e.clientX - canvasRect.left;
+        const prevPlayback = getPlayback();
+        const duration = getDuration();
+
+        setPlayback((x / canvas.width) * duration);
+
+        if (prevPlayback === 0 && audio.paused) {
+          drawVisualizerFrame(visualizerCanvas, true);
+          drawProgressBarFrame(progressBarCanvas);
+        } else {
+          drawVisualizerFrame(visualizerCanvas);
+          drawProgressBarFrame(progressBarCanvas);
+        }
+      }
+
+      window.addEventListener('resize', resizeEventHandler);
+      visualizerCanvas.addEventListener('click', (e: MouseEvent) =>
+        clickPlaybackHandler(e, visualizerCanvas)
+      );
+      progressBarCanvas.addEventListener('click', (e: MouseEvent) =>
+        clickPlaybackHandler(e, progressBarCanvas)
+      );
+
+      drawVisualizer(visualizerCanvas);
+      drawProgressBar(progressBarCanvas);
+      drawFrame(visualizerCanvas, progressBarCanvas, isFirstRender);
+
+      return () => {
+        window.removeEventListener('resize', resizeEventHandler);
+        visualizerCanvas.removeEventListener(
+          'click',
+          visualizerPlaybackHandler
+        );
+        progressBarCanvas.removeEventListener(
+          'click',
+          progressBarPlaybackHandler
+        );
+      };
     }
+  }
 
-    canvas = canvasEl;
+  function drawFrame(
+    visualizerCanvas: HTMLCanvasElement,
+    progressBarCanvas: HTMLCanvasElement,
+    staticRender: boolean = false
+  ) {
+    if (visualizerCanvas && progressBarCanvas) {
+      drawVisualizerFrame(visualizerCanvas, staticRender);
+      drawProgressBarFrame(progressBarCanvas);
+    }
+  }
 
+  function drawVisualizer(canvas: HTMLCanvasElement) {
     const canvasCtx = canvas.getContext('2d');
 
     canvas.width = canvas.offsetWidth;
     canvas.height = 90;
 
     bufferLength = Math.round(canvas.width / 3);
-    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (audio.paused) {
-      drawFrame(true);
-    }
+    canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  function drawFrame(staticRender: boolean = false) {
-    if (!canvas) {
-      return;
-    }
-
+  function drawVisualizerFrame(
+    canvas: HTMLCanvasElement,
+    staticRender: boolean = false
+  ) {
     const canvasCtx = canvas.getContext('2d')!;
-    let dataArray = new Uint8Array(bufferLength);
 
-    // instead of fetching mp3 and calculating whole buffer
-    // we'll just fill dataArray with random values
-    // it is much performant and not crucial to UI/UX
     if (staticRender) {
       dataArray = createRandomUint8Array(bufferLength);
-    } else {
+    } else if (!audio.paused) {
+      dataArray = new Uint8Array(bufferLength);
       analyser.getByteFrequencyData(dataArray);
     }
 
@@ -118,17 +174,44 @@ export function createPlayer() {
 
     for (let i = 0; i < bufferLength; i++) {
       let barHeight = (dataArray[i] / 255) * (canvas.height - 25);
-      if ((audio.duration / bufferLength) * i <= audio.currentTime) {
+
+      if ((audio.duration / bufferLength) * i < audio.currentTime) {
         canvasCtx.fillStyle = '#97a9b2';
+        canvasCtx.fillRect(x, 65, 2, -barHeight);
+        canvasCtx.fillStyle = '#EDF0F2';
+        canvasCtx.fillRect(x, 65, 2, (dataArray[i] / 255) * 25);
       } else {
         canvasCtx.fillStyle = '#dee7eb';
+        canvasCtx.fillRect(x, 65, 2, -barHeight);
       }
-
-      canvasCtx.fillRect(x, 65, 2, -barHeight);
 
       x = barWidth * i;
     }
   }
+
+  function drawProgressBar(canvas: HTMLCanvasElement) {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = 8;
+  }
+
+  function drawProgressBarFrame(canvas: HTMLCanvasElement) {
+    if (canvas) {
+      const canvasCtx = canvas.getContext('2d');
+
+      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+      canvasCtx.fillStyle = '#EDF0F2';
+      canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+      const gradient = canvasCtx.createLinearGradient(0, 0, canvas.width, 0);
+      gradient.addColorStop(0, '#10b1dc');
+      gradient.addColorStop(1, '#2dd4c7');
+      canvasCtx.fillStyle = gradient;
+      const actualWidth =
+        (audio.currentTime / audio.duration) * canvas.width || 0;
+
+      canvasCtx.fillRect(0, 0, actualWidth, canvas.height);
+    }
+  }
+
   return {
     audio,
     setSong,

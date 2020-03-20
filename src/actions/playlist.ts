@@ -3,7 +3,7 @@ import { Action } from 'redux';
 import { State } from '@reducers/index';
 import { types } from '@typings/playlist';
 import { searchByArtist } from '../api';
-import { setCurrentSong } from './player';
+import { setSongRequest, pause } from './player';
 
 type ThunkResult = ThunkAction<void, State, unknown, Action<string>>;
 
@@ -12,15 +12,18 @@ export function getSongsByArtist(artist: string): ThunkResult {
     dispatch(getSongsRequest());
 
     searchByArtist(artist).then(
-      (data: any) => {
-        if (data.data.total !== 0) {
-          dispatch(getSongsSuccess(data.data));
-          dispatch(setCurrentSong(data.data[0].id));
+      (response: any) => {
+        if (response.data.total !== 0) {
+          dispatch(getSongsSuccess(response.data));
+
+          // pause to prevent from autoplaying
+          dispatch(pause(0));
+          dispatch(setSongRequest(response.data[0].id));
         }
       },
       (error: Error) => {
         dispatch(getSongsFailure(error));
-      },
+      }
     );
   };
 }

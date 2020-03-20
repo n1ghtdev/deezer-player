@@ -29,12 +29,19 @@ export default function Time(props: Props) {
         setCurrentTime(Math.round(getCurrentTime()));
       }
     }
+
     if (player.state === 'playing') {
       then = Date.now();
       loop();
-    } else if (player.state === 'paused') {
+    } else if (player.state !== 'playing') {
       setCurrentTime(Math.round(player.pausedAt));
     }
+
+    return () => {
+      if (raf.current) {
+        cancelAnimationFrame(raf.current);
+      }
+    };
   }, [player.state, player.pausedAt, getCurrentTime]);
 
   return (

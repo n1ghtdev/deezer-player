@@ -1,10 +1,10 @@
 import React from 'react';
 import { Song } from '@typings/playlist';
 import SongItem from './song-item';
+import { setSongRequest } from '@actions/player';
+import { useDispatch } from 'react-redux';
 
 import './song-list.scss';
-import { setCurrentSong } from '@actions/player';
-import { useDispatch } from 'react-redux';
 
 type Props = {
   songlist: any;
@@ -14,6 +14,13 @@ type Props = {
 export default function SongList(props: Props) {
   const { songlist, currentSong } = props;
   const dispatch = useDispatch();
+
+  const handleChangeSong = React.useCallback(
+    (id: number) => {
+      dispatch(setSongRequest(id));
+    },
+    [dispatch]
+  );
 
   return (
     <div className="song-list">
@@ -25,9 +32,7 @@ export default function SongList(props: Props) {
             title={song.title_short}
             duration={song.duration}
             active={song.id === currentSong}
-            onChangeSong={(id: number) => {
-              dispatch(setCurrentSong(id, 'playing'));
-            }}
+            onChangeSong={handleChangeSong}
           />
         ))
       ) : (

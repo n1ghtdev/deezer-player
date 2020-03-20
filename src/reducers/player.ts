@@ -8,12 +8,15 @@ const initialState: Player = {
   duration: 0,
   currentSong: null,
   volume: 50,
+  autoplay: false,
 };
 
 export default function playerReducer(
   state: Player = initialState,
-  action: Actions,
+  action: Actions
 ) {
+  const prevPlayerState = state.state;
+
   return produce(state, draft => {
     switch (action.type) {
       case types.PLAY: {
@@ -26,20 +29,25 @@ export default function playerReducer(
         break;
       }
       case types.INIT: {
-        draft.state = 'paused';
+        draft.state = 'loading';
         draft.currentSong = action.payload.currentSong;
         draft.pausedAt = action.payload.pausedAt;
         draft.duration = action.payload.duration;
         break;
       }
-      case types.SET_CURRENT_SONG: {
+      case types.SET_SONG_REQUEST: {
+        if (prevPlayerState === 'playing') {
+          draft.autoplay = true;
+        }
+
         draft.pausedAt = 0;
         draft.currentSong = action.payload.songId;
-        draft.state = action.payload.state;
+        draft.state = 'loading';
         break;
       }
-      case types.SET_DURATION: {
+      case types.SET_SONG_SUCCESS: {
         draft.duration = action.payload;
+        draft.state = state.autoplay ? 'playing' : 'loaded';
         break;
       }
       case types.CHANGE_VOLUME: {

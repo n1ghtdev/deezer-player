@@ -1,0 +1,28 @@
+.player-bar {
+  &_progressbar {
+    width: 100%;
+  }
+
+  &_content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 20px;
+
+    @media (min-width: 768px) {
+      flex-wrap: nowrap;
+      justify-content: unset;
+    }
+  }
+}
+
+// &::before {
+//   content: '';
+//   position: absolute;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 8px;
+//   background: linear-gradient(to right, #07aadd, #01d5c3);
+//   display: block;
+// }

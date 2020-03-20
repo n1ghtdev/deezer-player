@@ -1,16 +1,21 @@
 import React, { MutableRefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentSong, setCurrentSongDuration } from '@actions/player';
+import { setSongRequest, setSongSuccess } from '@actions/player';
 import { State } from '@reducers/index';
 import { getNextSong } from '@selectors/playlist';
 import { createPlayer } from '@utils/player-utils';
 
 type PlayerProps = {
   songUrl: string;
-  canvas: MutableRefObject<HTMLCanvasElement>;
+  visualizerRef: MutableRefObject<HTMLCanvasElement>;
+  progressBarRef: MutableRefObject<HTMLCanvasElement>;
 };
 
-export default function usePlayer<PlayerProps>(songUrl, canvas) {
+export default function usePlayer<PlayerProps>(
+  songUrl,
+  visualizerRef,
+  progressBarRef
+) {
   const dispatch = useDispatch();
   const player = useSelector((state: State) => state.player);
   const nextSongId = useSelector(getNextSong);
@@ -26,21 +31,19 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
       return;
     }
 
-    const audio = Player.current.audio;
     function handleAudioEnded() {
-      dispatch(setCurrentSong(nextSongId, 'playing'));
+      dispatch(setSongRequest(nextSongId));
     }
 
     function handleMetaData() {
-      dispatch(
-        setCurrentSongDuration(Math.round(Player.current.getDuration()))
-      );
       if (player.pausedAt !== 0 && Player.current.audio.paused) {
         Player.current.setPlayback(player.pausedAt);
-        Player.current.drawFrame(true);
+        // Player.current.drawFrame(true);
       }
+      dispatch(setSongSuccess(Math.round(Player.current.getDuration())));
     }
 
+    const audio = Player.current.audio;
     const cleanup = Player.current.setSong(songUrl);
     audio.addEventListener('ended', handleAudioEnded);
     audio.addEventListener('loadedmetadata', handleMetaData);
@@ -57,46 +60,21 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
   }, [songUrl, dispatch, nextSongId, player.pausedAt]);
 
   React.useLayoutEffect(() => {
-    const canvasRef = canvas.current;
+    const visualizer = visualizerRef.current;
+    const progressBar = progressBarRef.current;
 
-    function resizeEventHandler(e: UIEvent) {
-      if (canvasRef) {
-        canvasRef.width = canvasRef.offsetWidth;
-        Player.current.drawCanvas(canvasRef);
-      }
+    if (!visualizer || !progressBar || player.state === 'loading') {
+      return;
     }
 
-    function playbackEventHandler(e: MouseEvent) {
-      if (canvasRef) {
-        const canvasRect = canvasRef.getBoundingClientRect();
-        const x = e.clientX - canvasRect.left;
-        const prevPlayback = Player.current.getPlayback();
-        const duration = Player.current.getDuration();
+    const cleanup = Player.current.drawCanvas(
+      visualizer,
+      progressBar,
+      player.state === 'loaded'
+    );
 
-        Player.current.setPlayback((x / canvasRef.width) * duration);
-
-        if (prevPlayback === 0 && Player.current.audio.paused) {
-          Player.current.drawFrame(true);
-        } else {
-          Player.current.drawFrame();
-        }
-      }
-    }
-
-    if (canvasRef) {
-      window.addEventListener('resize', resizeEventHandler);
-      canvasRef.addEventListener('click', playbackEventHandler);
-
-      Player.current.drawCanvas(canvasRef);
-    }
-
-    return () => {
-      window.removeEventListener('resize', resizeEventHandler);
-      if (canvasRef) {
-        canvasRef.removeEventListener('click', playbackEventHandler);
-      }
-    };
-  }, [canvas, songUrl]);
+    return () => cleanup;
+  }, [visualizerRef, progressBarRef, player.state, songUrl]);
 
   React.useEffect(() => {
     Player.current.changeVolume(player.volume / 100);
@@ -111,14 +89,14 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
 
       if (elapsed > delay.current) {
         then.current = now - (elapsed % delay.current);
-        Player.current.drawFrame();
+        Player.current.drawFrame(visualizerRef.current, progressBarRef.current);
       }
     }
 
     Player.current.play();
     then.current = Date.now();
     renderLoop();
-  }, []);
+  }, [progressBarRef, visualizerRef]);
 
   const pause = React.useCallback(() => {
     cancelAnimationFrame(raf.current);
@@ -139,6 +117,5 @@ export default function usePlayer<PlayerProps>(songUrl, canvas) {
 
   return {
     getCurrentTime,
-    setPlayback: Player.current.setPlayback,
   };
 }

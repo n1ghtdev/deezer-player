@@ -1,0 +1,35 @@
+@import '@styles/vars.scss';
+
+.icon-playing {
+  overflow: hidden;
+
+  &_bar {
+    fill: $primary;
+  }
+
+  &.active {
+    .icon-playing_bar {
+      &-1 {
+        animation: bounce 750ms linear infinite;
+      }
+      &-2 {
+        animation: bounce 750ms linear infinite;
+      }
+      &-3 {
+        animation: bounce 750ms linear infinite;
+      }
+      &-4 {
+        animation: bounce 750ms linear infinite;
+      }
+    }
+  }
+
+  @keyframes bounce {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(5px);
+    }
+  }
+}
